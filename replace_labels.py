@@ -31,7 +31,7 @@ target_files = []
 target_files.extend(glob("README.md"))
 target_files.extend(glob("reports/final_report.md"))
 target_files.extend(glob("notebooks/*.ipynb"))
-target_files.extend(glob("target_files.extend(glob(r'C:\\Users\\samik\\.gemini\\antigravity\\brain\\*\\*.md'))"))
+target_files.extend(glob(r'C:\Users\samik\.gemini\antigravity\brain\*\*.md'))
 
 artifact_path = r"C:\Users\samik\.gemini\antigravity\brain\d252dc1b-b892-49e9-abf2-15a081a99996"
 target_files.extend(glob(os.path.join(artifact_path, "*.md")))

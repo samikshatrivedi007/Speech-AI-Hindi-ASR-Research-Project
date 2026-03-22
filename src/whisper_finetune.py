@@ -167,6 +167,8 @@ class WhisperFinetuner:
         self.processor = WhisperProcessor.from_pretrained(
             self.model_name, language=self.language, task=self.task
         )
+        processor = self.processor
+        assert processor is not None, "Processor failed to load"
         self.model = WhisperForConditionalGeneration.from_pretrained(self.model_name)
 
         # Force language and task tokens to avoid model defaulting to English
@@ -175,7 +177,7 @@ class WhisperFinetuner:
         self.model.generation_config.forced_decoder_ids = None
 
         data_collator = DataCollatorSpeechSeq2SeqWithPadding(
-            processor=self.processor,
+            processor=processor,
             decoder_start_token_id=self.model.config.decoder_start_token_id,
         )
 
@@ -189,7 +191,7 @@ class WhisperFinetuner:
             max_steps=self.max_steps,
             gradient_checkpointing=True,
             fp16=self.fp16,
-            evaluation_strategy="steps",
+            eval_strategy="steps",
             per_device_eval_batch_size=self.per_device_eval_batch_size,
             predict_with_generate=True,
             generation_max_length=225,
@@ -210,7 +212,7 @@ class WhisperFinetuner:
             eval_dataset=processed_dataset["validation"],
             data_collator=data_collator,
             compute_metrics=self._compute_metrics,
-            tokenizer=self.processor.feature_extractor,
+            tokenizer=processor.tokenizer,
             callbacks=[EarlyStoppingCallback(early_stopping_patience=3)],
         )
 

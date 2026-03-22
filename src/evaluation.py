@@ -18,7 +18,7 @@ from typing import Any, Callable, Dict, List, Optional, Tuple
 
 import numpy as np
 import pandas as pd
-from jiwer import wer, cer, compute_measures
+from jiwer import wer, cer, process_words
 from tqdm import tqdm
 
 logger = logging.getLogger(__name__)
@@ -106,13 +106,13 @@ def compute_detailed_measures(
     Returns:
         Dict with keys: wer, hits, substitutions, insertions, deletions.
     """
-    measures = compute_measures(references, predictions)
+    out = process_words(references, predictions)
     return {
-        "wer": round(float(measures["wer"]), 6),
-        "hits": int(measures["hits"]),
-        "substitutions": int(measures["substitutions"]),
-        "insertions": int(measures["insertions"]),
-        "deletions": int(measures["deletions"]),
+        "wer": round(float(out.wer), 6),
+        "hits": int(out.hits),
+        "substitutions": int(out.substitutions),
+        "insertions": int(out.insertions),
+        "deletions": int(out.deletions),
     }
 
 
