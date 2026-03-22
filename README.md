@@ -1,63 +1,71 @@
-﻿# AI Researcher Intern â€” Speech & Audio Assignment
+# 🎙️ AI Researcher Intern - Speech & Audio Assignment
 
-A complete, production-quality implementation of four Hindi ASR research tasks:
+A complete, production-quality implementation of Hindi ASR research tasks:
 
-1. **Task 1** â€“ Whisper Fine-Tuning + WER Evaluation + Error Analysis
-2. **Task 2** â€“ ASR Output Cleanup Pipeline (Number Normalisation + English Detection)
-3. **Task 3** â€“ Hindi Spelling Correctness Detection with Confidence Scoring
-4. **Task 4** â€“ Lattice-Based Fair WER Evaluation System
+## 📌 Tasks Covered
+
+1. **Task 1** - Whisper Fine-Tuning + WER Evaluation + Error Analysis
+2. **Task 2** - ASR Cleanup Pipeline (Number Normalisation + English Detection)
+3. **Task 3** - Hindi Spelling Detection with Confidence Scoring
+4. **Task 4** - Lattice-Based Fair WER Evaluation
 
 ---
 
-## ðŸ“ Project Structure
+## 📁 Project Structure
 
 ```
 joshTalk/
-â”œâ”€â”€ data/
-â”‚   â”œâ”€â”€ raw/                   # Downloaded audio + cached HuggingFace datasets
-â”‚   â””â”€â”€ processed/             # Manifest CSVs, processed features
-â”‚
-â”œâ”€â”€ notebooks/
-â”‚   â”œâ”€â”€ task_01_asr_finetuning.ipynb          # ASR pipeline end-to-end
-â”‚   â”œâ”€â”€ task_02_cleanup_pipeline.ipynb    # Number norm + English tagging
-â”‚   â”œâ”€â”€ task_03_spelling_detection.ipynb  # Spelling classifier
-â”‚   â””â”€â”€ task_04_lattice_evaluation.ipynb             # Lattice WER system
-â”‚
-â”œâ”€â”€ src/
-â”‚   â”œâ”€â”€ data_loader.py         # HuggingFace + CSV + URL dataset loaders
-â”‚   â”œâ”€â”€ preprocessing.py       # Audio + text preprocessing for Whisper
-â”‚   â”œâ”€â”€ whisper_finetune.py    # Fine-tuning pipeline (Seq2SeqTrainer)
-â”‚   â”œâ”€â”€ evaluation.py          # WER/CER computation + CSV export
-â”‚   â”œâ”€â”€ error_analysis.py      # Dynamic error taxonomy + systematic sampling
-â”‚   â”œâ”€â”€ number_normalizer.py   # Hindi number word â†’ digit converter
-â”‚   â”œâ”€â”€ english_detector.py    # English loanword detector with [EN] tagging
-â”‚   â”œâ”€â”€ spelling_checker.py    # Dictionary + edit distance spelling checker
-â”‚   â””â”€â”€ lattice_builder.py     # DP alignment + lattice WER computer
-â”‚
-â”œâ”€â”€ outputs/                   # Generated CSVs, plots, model checkpoints
-â”œâ”€â”€ reports/
-â”‚   â””â”€â”€ final_report.md        # Full methodology + results report
-â”œâ”€â”€ requirements.txt
-â””â”€â”€ README.md
+│
+├── data/
+│   ├── raw/                   
+│   └── processed/             
+│
+├── notebooks/
+│   ├── task_01_asr_finetuning.ipynb
+│   ├── task_02_cleanup_pipeline.ipynb
+│   ├── task_03_spelling_detection.ipynb
+│   └── task_04_lattice_evaluation.ipynb
+│
+├── src/
+│   ├── data_loader.py
+│   ├── preprocessing.py
+│   ├── whisper_finetune.py
+│   ├── evaluation.py
+│   ├── error_analysis.py
+│   ├── number_normalizer.py
+│   ├── english_detector.py
+│   ├── spelling_checker.py
+│   └── lattice_builder.py
+│
+├── outputs/
+├── reports/
+│   └── final_report.md
+│
+├── requirements.txt
+└── README.md
 ```
 
 ---
 
-## âš¡ Quick Setup
+## ⚡ Quick Setup
 
-### 1. Clone / navigate to the project
+### 1. Navigate to project
 
 ```bash
 cd path/to/joshTalk
 ```
 
-### 2. Create a virtual environment (recommended)
+### 2. Create virtual environment
 
 ```bash
 python -m venv .venv
-# Windows:
+```
+
+```bash
+# Windows
 .venv\Scripts\activate
-# Linux/macOS:
+
+# Linux/macOS
 source .venv/bin/activate
 ```
 
@@ -67,131 +75,135 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 4. Run on Google Colab
-
-Upload the folder to Google Drive, then open any notebook and run the first cell which has the `!pip install` commands.
-
 ---
 
-## ðŸš€ How to Run Each Question
+## 🚀 How to Run
 
-### Task 1 â€” Fine-Tuning + WER Evaluation
+### 🔹 Task 1 - Fine-Tuning + Evaluation
 
 ```bash
 jupyter notebook notebooks/task_01_asr_finetuning.ipynb
 ```
 
-**Steps inside the notebook:**
-1. Loads real JoshTalks ~10h dataset using the GCS URL manifests and segment JSON schemas
-2. Computes baseline WER with unmodified Whisper-small against FLEURS test set
-3. Fine-tunes on JoshTalks training data (GPU recommended)
-4. Evaluates fine-tuned model
-5. Runs systematic error analysis on 25 samples
-6. Applies number normalisation as a post-processing improvement
+Includes:
 
-**Outputs:**
-- `outputs/wer_results.csv` â€” baseline vs fine-tuned WER
-- `outputs/error_samples.csv` â€” annotated error samples
-- `outputs/task_01_results.png` â€” WER comparison + error taxonomy chart
+* Dataset loading (~10h Hindi ASR data)
+* Baseline Whisper-small evaluation
+* Fine-tuning
+* WER comparison
+* Error analysis (25 samples)
+* Post-processing improvement
 
-### Task 2 â€” Cleanup Pipeline
+Outputs:
+
+* `outputs/wer_results.csv`
+* `outputs/error_samples.csv`
+* `outputs/task_01_results.png`
+
+---
+
+### 🔹 Task 2 - Cleanup Pipeline
 
 ```bash
 jupyter notebook notebooks/task_02_cleanup_pipeline.ipynb
 ```
 
-**Covers:**
-- 15+ Hindi number normalisation test cases including compound numbers and idiom protection
-- English word detection at tunable confidence thresholds
-- Combined before/after pipeline on representative ASR outputs
+Includes:
 
-### Task 3 â€” Spelling Detection
+* Hindi number normalization (compound + edge cases)
+* English word detection in Devanagari
+* Before/after pipeline results
+
+---
+
+### 🔹 Task 3 - Spelling Detection
 
 ```bash
 jupyter notebook notebooks/task_03_spelling_detection.ipynb
 ```
 
-**Covers:**
-- Single-word examples with full reasoning
-- Batch classification of real 1.77 Lakh Hindi words directly from the assignment spreadsheet
-- Confidence distribution visualisation
-- Low-confidence failure pattern analysis
-- Accuracy evaluation on labelled ground-truth samples
+Includes:
 
-### Task 4 â€” Lattice WER System
+* Dictionary + edit distance approach
+* Confidence scoring
+* Low-confidence analysis
+* Evaluation on dataset
+
+---
+
+### 🔹 Task 4 - Lattice Evaluation
 
 ```bash
 jupyter notebook notebooks/task_04_lattice_evaluation.ipynb
 ```
 
-**Covers:**
-- Build word-level lattice from 6 ASR hypothesis columns (Human + Models H, i, k, l, m, n) from spreadsheet
-- Inspect per-position alternatives and alignment logic
-- Compute standard WER vs lattice WER per model
-- Agreement-discount ablation (0.0 â†’ 1.0)
+Includes:
+
+* Multi-model alignment
+* Lattice construction
+* Flexible WER computation
+* Agreement-based scoring
 
 ---
 
-## ðŸ“Š Sample Outputs
+## 📊 Results
 
-### WER Comparison (Task 1)
+### WER Comparison
 
-| Model | WER |
-|---|---|
+| Model                  | WER  |
+| ---------------------- | ---- |
 | Baseline Whisper-small | ~58% |
-| Fine-tuned (500 steps) | ~37% |
-| + Number Normalisation | ~35% |
-
-### Error Taxonomy (Task 1)
-
-| Type | Count |
-|---|---|
-| substitution | 10 |
-| phonetic | 7 |
-| deletion | 4 |
-| number_error | 2 |
-| english_mix | 2 |
-
-### Lattice WER vs Standard WER (Task 4)
-
-| Utterance | Standard WER | Lattice WER |
-|---|---|---|
-| Sentence 1 | 0.250 | 0.125 |
-| Sentence 2 | 0.333 | 0.167 |
-| Corpus avg | 0.300 | 0.170 |
+| Fine-tuned model       | ~37% |
+| + Cleanup pipeline     | ~35% |
 
 ---
 
-## ðŸ”‘ Key Insights
+### Error Taxonomy
 
-- **Fine-tuning on domain data is essential** â€” Whisper-small's Hindi generalisation is limited without task-specific supervision
-- **Number normalisation is a high-ROI fix** â€” cheap post-processing that reduces a significant fraction of lexical WER
-- **Code-switching (Hindiâ€“English) is pervasive** â€” any Hindi ASR system must handle Devanagari transliterations of English words
-- **Lattice WER is a fairer metric** in multi-model settings where the reference may lag behind consistent model consensus
-- **Edit distance + phonetics > dictionary alone** â€” the phonetic encoder recovers cases where the dictionary is missing inflected/variant forms
-
----
-
-## ðŸ§© Extending the Project
-
-| Task | How to Extend |
-|---|---|
-| Larger model | Change `MODEL_NAME = 'openai/whisper-medium'` in Task 1 |
-| Full Hindi dictionary | Pass `dictionary_path=` to `HindiSpellingChecker` |
-| More ASR models in lattice | Add more strings to `hypotheses` list in Task 4 |
-| Custom error categories | Add new `(label, predicate, reasoning)` tuples to `ErrorClassifier._rules` |
-| External Morphological Analyzer | Integrate IndicNLP to correctly categorise inflected valid Hindi words in Task 3 |
+| Type         | Count |
+| ------------ | ----- |
+| Substitution | 10    |
+| Phonetic     | 7     |
+| Deletion     | 4     |
+| Number Error | 2     |
+| English Mix  | 2     |
 
 ---
 
-## ðŸ“¦ Requirements Summary
+### Lattice WER
 
-- Python 3.9+
-- PyTorch 2.0+ (CUDA optional but recommended for Task 1)
-- HuggingFace Transformers, Datasets, Evaluate
-- jiwer (WER computation)
-- editdistance (spelling checker)
-- librosa, soundfile (audio processing)
-- pandas, matplotlib, seaborn (analysis + visualisation)
+| Metric  | Standard WER | Lattice WER |
+| ------- | ------------ | ----------- |
+| Average | 0.300        | 0.170       |
 
-Full list: see `requirements.txt`
+---
+
+## 🔑 Key Insights
+
+* Fine-tuning improves Hindi ASR performance significantly
+* Number normalization gives high impact with low effort
+* Code-mixed Hindi-English speech requires special handling
+* Lattice-based evaluation provides fairer performance measurement
+* Combining phonetics with edit distance improves spelling detection
+
+---
+
+## 🧩 Extensions
+
+* Upgrade to Whisper-medium or larger models
+* Add full Hindi dictionary
+* Extend lattice system for more models
+* Improve number parsing
+
+---
+
+## 📦 Requirements
+
+* Python 3.9+
+* PyTorch 2.0+
+* HuggingFace Transformers & Datasets
+* jiwer
+* librosa
+* pandas, matplotlib, seaborn
+
+See `requirements.txt` for full details.
