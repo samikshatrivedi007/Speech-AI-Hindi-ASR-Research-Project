@@ -257,29 +257,39 @@ class LatticeBuilder:
 
             aligned_backbone, aligned_hyp = self._align(backbone, hyp_tokens)
 
-            # Merge aligned_hyp alternatives into lattice nodes
-            # We need a mapping from aligned positions → lattice node positions
-            lattice_pos = 0
-            expanded_nodes: List[Optional[LatticeNode]] = list(lattice.nodes)
-
+            # Walk through alignment result and build updated node list.
+            # aligned_backbone[i] == ''  → insertion in hypothesis (new node)
+            # aligned_backbone[i] != ''  → existing backbone node
             new_nodes: List[LatticeNode] = []
-            node_ptr = 0
+            node_ptr = 0   # pointer into lattice.nodes (backbone positions)
+
             for aligned_b, aligned_h in zip(aligned_backbone, aligned_hyp):
                 if aligned_b != "":
-                    # Existing lattice position
+                    # Existing backbone position — fetch its lattice node
                     if node_ptr < len(lattice.nodes):
                         node = lattice.nodes[node_ptr]
-                        if aligned_h != "":
-                            node.add(aligned_h)
-                        new_nodes.append(node)
                         node_ptr += 1
+                    else:
+                        # Defensive: create a fresh node if backbone pointer overruns
+                        node = LatticeNode(position=len(new_nodes), alternatives={aligned_b})
+                    # Add hypothesis alternative (skip empty gaps)
+                    if aligned_h != "":
+                        node.add(aligned_h)
+                    new_nodes.append(node)
                 else:
-                    # Insertion in hyp → new lattice node
+                    # Insertion from hypothesis → new lattice node
+                    # The '' represents that no backbone word exists here;
+                    # other hypotheses that were not aligned here get '' too.
                     new_node = LatticeNode(
                         position=len(new_nodes),
                         alternatives={"", aligned_h} if aligned_h else {""},
                     )
                     new_nodes.append(new_node)
+
+            # Append any remaining backbone nodes not consumed by this alignment
+            while node_ptr < len(lattice.nodes):
+                new_nodes.append(lattice.nodes[node_ptr])
+                node_ptr += 1
 
             # Re-number positions
             for p, node in enumerate(new_nodes):

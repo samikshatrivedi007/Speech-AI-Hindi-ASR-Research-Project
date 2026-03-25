@@ -29,6 +29,13 @@ import editdistance
 import pandas as pd
 from tqdm import tqdm
 
+# English loanwords written in Devanagari are CORRECT per transcription guidelines.
+# Import the canonical list from english_detector to avoid duplication.
+try:
+    from english_detector import ENGLISH_DEVANAGARI_DICT as _ENGLISH_LOAN_SET
+except ImportError:
+    _ENGLISH_LOAN_SET: Set[str] = set()
+
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
@@ -234,9 +241,11 @@ class HindiSpellingChecker:
 
     @staticmethod
     def _confidence_label(score: float) -> str:
-        for label, (low, high) in CONFIDENCE_THRESHOLDS.items():
-            if low <= score <= high:
-                return label
+        # Use strict < for upper boundary to avoid overlap at boundary points
+        if score >= CONFIDENCE_THRESHOLDS["high"][0]:
+            return "high"
+        elif score >= CONFIDENCE_THRESHOLDS["medium"][0]:
+            return "medium"
         return "low"
 
     # ------------------------------------------------------------------
@@ -258,6 +267,19 @@ class HindiSpellingChecker:
             return SpellingResult(
                 word=word, label="incorrect", confidence="low",
                 confidence_score=0.0, reason="Empty input."
+            )
+
+        # --- English loanword bypass (per transcription guidelines) ---
+        # English words spoken in conversations are transcribed in Devanagari
+        # (e.g. कंप्यूटर, इंटरव्यू). These count as CORRECT spelling.
+        if word in _ENGLISH_LOAN_SET:
+            return SpellingResult(
+                word=word,
+                label="correct",
+                confidence="high",
+                confidence_score=0.95,
+                reason="Recognised English loanword in Devanagari (correct per transcription guidelines).",
+                nearest_match=word,
             )
 
         # --- Dictionary lookup ---

@@ -17,9 +17,17 @@ import logging
 from dataclasses import dataclass, field, asdict
 from typing import Dict, List, Optional, Tuple
 
-from evaluation import SampleResult
-from preprocessing import HindiTextNormalizer
-from number_normalizer import HINDI_NUMBER_WORDS
+try:
+    from evaluation import SampleResult
+    from preprocessing import HindiTextNormalizer
+    from number_normalizer import HINDI_NUMBER_WORDS
+except ImportError:
+    # Fallback when module is imported from a different working directory
+    import sys, os as _os
+    sys.path.insert(0, _os.path.abspath(_os.path.dirname(__file__)))
+    from evaluation import SampleResult
+    from preprocessing import HindiTextNormalizer
+    from number_normalizer import HINDI_NUMBER_WORDS
 
 logger = logging.getLogger(__name__)
 
